@@ -1,0 +1,48 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./visiongrid.yaml:/app/visiongrid.yaml:ro
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      - VISIONGRID_LOG_LEVEL=INFO
+      - VISIONGRID_DETECTION__DEVICE=cpu
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8000
+      - NEXT_PUBLIC_WS_URL=ws://backend:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    profiles:
+      - distributed
+
+volumes:
+  redis_data:

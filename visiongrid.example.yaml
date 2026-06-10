@@ -1,0 +1,49 @@
+server:
+  host: 0.0.0.0
+  port: 8000
+  workers: 1
+
+database:
+  url: sqlite+aiosqlite:///./visiongrid.db
+
+detection:
+  model: yolov8n
+  confidence: 0.5
+  device: cpu  # Options: cpu, cuda:0, openvino
+
+storage_path: ./data
+log_level: INFO
+
+cameras:
+  - name: front-door
+    url: rtsp://192.168.1.100:554/stream1
+    protocol: rtsp
+    fps: 10
+    detection:
+      model: yolov8n
+      confidence: 0.5
+      classes: [person, car, dog, cat]
+    zones:
+      - name: entrance
+        points: [[0.1, 0.1], [0.9, 0.1], [0.9, 0.9], [0.1, 0.9]]
+        triggers: [enter, exit]
+
+  - name: backyard
+    url: rtsp://192.168.1.101:554/stream1
+    protocol: rtsp
+    fps: 5
+    detection:
+      model: yolov8n
+      classes: [person]
+    alerts:
+      - type: intrusion
+        notify: [webhook]
+        cooldown: 30
+
+  - name: webcam
+    url: "0"
+    protocol: usb
+    fps: 15
+    detection:
+      model: yolov8n
+      confidence: 0.4

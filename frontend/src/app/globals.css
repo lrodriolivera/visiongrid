@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
+  }
+}
+
+@layer utilities {
+  .grid-camera {
+    @apply aspect-video rounded-lg overflow-hidden bg-gray-900 border border-gray-800;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+
+  .badge-green {
+    @apply badge bg-green-500/10 text-green-400 ring-1 ring-green-500/20;
+  }
+
+  .badge-red {
+    @apply badge bg-red-500/10 text-red-400 ring-1 ring-red-500/20;
+  }
+
+  .badge-yellow {
+    @apply badge bg-yellow-500/10 text-yellow-400 ring-1 ring-yellow-500/20;
+  }
+}
