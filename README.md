@@ -68,7 +68,7 @@ Unlike cloud-locked solutions (Verkada, Meraki) or vendor-specific platforms (Mi
 ### Using Docker (recommended)
 
 ```bash
-git clone https://github.com/your-org/visiongrid.git
+git clone https://github.com/lrodriolivera/visiongrid.git
 cd visiongrid
 cp .env.example .env
 docker compose up -d
