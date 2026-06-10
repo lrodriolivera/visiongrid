@@ -18,7 +18,7 @@ class TestDetection:
         )
         assert det.class_name == "person"
         assert det.confidence == 0.95
-        assert det.center == (0.2, 0.3)
+        assert det.center == pytest.approx((0.2, 0.3))
         assert det.area == pytest.approx(0.04)
 
     def test_detection_result(self) -> None:

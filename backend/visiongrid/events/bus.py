@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +33,26 @@ class Event:
     timestamp: float = field(default_factory=time.time)
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        return _sanitize({
             "type": self.type.value,
             "camera_name": self.camera_name,
             "data": self.data,
             "timestamp": self.timestamp,
-        }
+        })
+
+
+def _sanitize(obj: Any) -> Any:
+    if isinstance(obj, dict):
+        return {k: _sanitize(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_sanitize(v) for v in obj]
+    if isinstance(obj, np.integer):
+        return int(obj)
+    if isinstance(obj, np.floating):
+        return float(obj)
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+    return obj
 
 
 EventHandler = Callable[[Event], None]
