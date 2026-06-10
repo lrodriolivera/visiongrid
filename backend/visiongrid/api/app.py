@@ -30,7 +30,10 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     if settings is None:
-        settings = load_config()
+        import os
+        config_path = os.environ.get("VISIONGRID_CONFIG_PATH")
+        from pathlib import Path
+        settings = load_config(Path(config_path) if config_path else None)
 
     app = FastAPI(
         title="VisionGrid",

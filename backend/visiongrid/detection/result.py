@@ -25,11 +25,11 @@ class Detection:
     def to_dict(self) -> dict[str, object]:
         return {
             "class_name": self.class_name,
-            "class_id": self.class_id,
-            "confidence": round(self.confidence, 3),
-            "bbox": [round(v, 4) for v in self.bbox],
-            "track_id": self.track_id,
-            "center": [round(v, 4) for v in self.center],
+            "class_id": int(self.class_id),
+            "confidence": round(float(self.confidence), 3),
+            "bbox": [round(float(v), 4) for v in self.bbox],
+            "track_id": int(self.track_id) if self.track_id is not None else None,
+            "center": [round(float(v), 4) for v in self.center],
         }
 
 
@@ -51,9 +51,9 @@ class DetectionResult:
     def to_dict(self) -> dict[str, object]:
         return {
             "camera_name": self.camera_name,
-            "timestamp": self.timestamp,
-            "frame_number": self.frame_number,
-            "inference_ms": round(self.inference_ms, 2),
+            "timestamp": float(self.timestamp),
+            "frame_number": int(self.frame_number),
+            "inference_ms": round(float(self.inference_ms), 2),
             "count": self.count,
             "detections": [d.to_dict() for d in self.detections],
         }

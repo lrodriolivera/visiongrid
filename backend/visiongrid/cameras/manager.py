@@ -7,6 +7,7 @@ from typing import Callable
 from visiongrid.cameras.base import CameraConnector, CameraFrame, CameraStatus
 from visiongrid.cameras.http import HTTPConnector
 from visiongrid.cameras.rtsp import RTSPConnector
+from visiongrid.cameras.snapshot import SnapshotConnector
 from visiongrid.cameras.usb import USBConnector
 from visiongrid.core.config import CameraConfig
 
@@ -21,6 +22,8 @@ PROTOCOL_MAP: dict[str, type[CameraConnector]] = {
     "hls": HTTPConnector,
     "usb": USBConnector,
     "v4l2": USBConnector,
+    "snapshot": SnapshotConnector,
+    "jpeg": SnapshotConnector,
 }
 
 FrameCallback = Callable[[CameraFrame], None]

@@ -33,6 +33,8 @@ def main() -> None:
 
 
 def _run_server(args: argparse.Namespace) -> None:
+    import os
+
     import uvicorn
 
     logging.basicConfig(
@@ -41,18 +43,14 @@ def _run_server(args: argparse.Namespace) -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    from visiongrid.core.config import load_config
-
-    settings = load_config(args.config)
-    settings.server.host = args.host
-    settings.server.port = args.port
-    settings.server.reload = args.reload
+    if args.config:
+        os.environ["VISIONGRID_CONFIG_PATH"] = str(args.config.resolve())
 
     uvicorn.run(
         "visiongrid.api.app:create_app",
-        host=settings.server.host,
-        port=settings.server.port,
-        reload=settings.server.reload,
+        host=args.host,
+        port=args.port,
+        reload=args.reload,
         factory=True,
         log_level=args.log_level.lower(),
     )

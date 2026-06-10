@@ -3,11 +3,24 @@ from __future__ import annotations
 import asyncio
 import json
 
+import numpy as np
 from fastapi import APIRouter, Query, Request, WebSocket, WebSocketDisconnect
+from starlette.responses import Response
 
 from visiongrid.events.bus import EventType
 
 router = APIRouter()
+
+
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj: object) -> object:
+        if isinstance(obj, np.integer):
+            return int(obj)
+        if isinstance(obj, np.floating):
+            return float(obj)
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return super().default(obj)
 
 
 @router.get("/events")
@@ -16,13 +29,15 @@ async def get_events(
     type: str | None = None,
     camera: str | None = None,
     limit: int = Query(default=100, le=1000),
-) -> list[dict[str, object]]:
+) -> Response:
     state = request.app.state.vg
     event_type = EventType(type) if type else None
     events = state.event_bus.get_history(
         event_type=event_type, camera_name=camera, limit=limit
     )
-    return [e.to_dict() for e in events]
+    data = [e.to_dict() for e in events]
+    body = json.dumps(data, cls=NumpyEncoder)
+    return Response(content=body, media_type="application/json")
 
 
 @router.websocket("/ws/events")

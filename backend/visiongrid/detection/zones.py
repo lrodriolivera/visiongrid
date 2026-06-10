@@ -56,8 +56,9 @@ def cv2_point_in_polygon(point: np.ndarray, polygon: np.ndarray) -> bool:
     import cv2
 
     polygon_int = (polygon * 1000).astype(np.int32)
-    point_int = tuple((point * 1000).astype(int))
-    result = cv2.pointPolygonTest(polygon_int, point_int, False)
+    point_scaled = point * 1000
+    point_tuple = (float(point_scaled[0]), float(point_scaled[1]))
+    result = cv2.pointPolygonTest(polygon_int, point_tuple, False)
     return result >= 0
 
 
